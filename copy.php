@@ -2,7 +2,7 @@
 
 <?php
 set_time_limit(0);
-//if (ob_get_level() == 0) ob_start();
+if (ob_get_level() == 0) ob_start();
 include_once("curl.php");
 /**
  * Copy remote file over HTTP one small chunk at a time.
