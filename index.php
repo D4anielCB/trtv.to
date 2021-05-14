@@ -4,6 +4,9 @@
 
 include_once("curl.php");
 
+print_r( "Colocar no addon: <b>http://".$_SERVER["HTTP_HOST"]."/".explode ("/",$_SERVER["PHP_SELF"])[1]."</b>" );
+print_r( "\n\n" );
+
 $series='https://trailers.to/en/tvshow/705/modern-family-2009
 https://trailers.to/en/tvshow/8174/the-walking-dead-2010
 https://trailers.to/en/tvshow/19165/new-amsterdam-2018
