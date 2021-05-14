@@ -1,5 +1,6 @@
 <pre>
-<form><input type=text name=serie><input type=submit></form>
+<form>Url da série: <input type=text name=serie><input type=submit></form>
+<form action="copy.php" target="_Blank">Url filme/episódio: <input type=text name=u ><input type=submit></form>
 <?php
 
 include_once("curl.php");

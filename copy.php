@@ -25,6 +25,7 @@ $idmaster = $out2[1][0];
 preg_match_all("/title\/(tt\d+)/i", $abre, $out3, PREG_PATTERN_ORDER);
 //print_r($out3);
 $imdb=$out3[1][0];
+$title = preg_replace("/Season ?(\d+).*?Episode ?(\d+)/", "S$1E$2", $title );
 print_r($title);
 $external = abre("https://api.themoviedb.org/3/find/".$imdb."?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US&external_source=imdb_id");
 $externalj = json_decode($external);
