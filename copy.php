@@ -1,4 +1,5 @@
 <form><input type=text name=u><input type=submit></form>
+
 <?php
 set_time_limit(0);
 //if (ob_get_level() == 0) ob_start();
@@ -22,7 +23,7 @@ $title = $out[2][0];
 preg_match_all("/lazy..id\=.([^\"]+)/i", $abre, $out2, PREG_PATTERN_ORDER);
 $idmaster = $out2[1][0];
 preg_match_all("/title\/(tt\d+)/i", $abre, $out3, PREG_PATTERN_ORDER);
-print_r($out3);
+//print_r($out3);
 $imdb=$out3[1][0];
 print_r($title);
 $external = abre("https://api.themoviedb.org/3/find/".$imdb."?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US&external_source=imdb_id");
@@ -35,18 +36,27 @@ if( $externalj->tv_results )
 	//$tmdbj = json_decode($tmdb);
 	//print_r($externalj->tv_results[0]);
 	$file = "Shows/".$tmdb." ".windows($title);
-	echo $file;
+	//echo $file;
 }
 elseif ($externalj->movie_results)
 {
 	$tmdb = $externalj->movie_results[0]->id;
 	$file = "Movies/".$tmdb." ".windows($title);
-	echo $file;
+	//echo $file;
 }
 //exit();
 
 if (!$file)
 	exit();
+
+function formatBytes($size, $precision = 2)
+{
+    $base = log($size, 1024);
+    $suffixes = array('', 'K', 'M', 'G', 'T');   
+
+    return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+}
+
  
 function copyfile($infile, $outfile) {
     $chunksize = 10 * (1024 * 1024); // 10 Megs
@@ -106,13 +116,16 @@ function copyfile($infile, $outfile) {
             break;
         }
     }
-	/*
-print_r("\n");
-print_r($length);
-print_r("\n");
+	
+//print_r("\n");
+//print_r($length);
+print_r("<br>");
+print_r("Tamanho do arquivo: ". formatBytes(  ($length*10)) );
+print_r(" - ". (  ($length*10)) );
+print_r("<br>");
 print_r($headers);
-exit();
-*/
+//exit();
+
     /**
      * Start reading in the remote file, and writing it to the
      * local file one chunk at a time.
@@ -132,7 +145,8 @@ exit();
 		echo ".";
 		if ($perf == $per)
 		{
-			echo " ".$per."% ".$cnt." ";
+			echo " ".$per."% ".formatBytes(round($cnt*10))." ";
+			//echo " ".$per."% ".(round($cnt*10))." ";
 			$perf=$perf+1;
 			//ob_get_clean();
 		}
