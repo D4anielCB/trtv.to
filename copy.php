@@ -1,8 +1,11 @@
 <form><input type=text name=u><input type=submit></form>
 
 <?php
+ignore_user_abort(1);
 set_time_limit(0);
+ini_set('memory_limit', '20000M');
 if (ob_get_level() == 0) ob_start();
+date_default_timezone_set('America/Sao_Paulo');
 include_once("curl.php");
 /**
  * Copy remote file over HTTP one small chunk at a time.
@@ -53,14 +56,14 @@ if (!$file)
 function formatBytes($size, $precision = 2)
 {
     $base = log($size, 1024);
-    $suffixes = array('', 'K', 'M', 'G', 'T');   
+    $suffixes = array('', 'Kb', 'Mb', 'Gb', 'Tb');   
 
     return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
 }
 
- 
+///---------------------------------------------
 function copyfile($infile, $outfile) {
-    $chunksize = 10 * (1024 * 1024); // 10 Megs
+    $chunksize = 50 * (1024 * 1024); // 10 Megs
 
     /**
      * parse_url breaks a part a URL into it's parts, i.e. host, path,
@@ -68,11 +71,6 @@ function copyfile($infile, $outfile) {
      */
     $parts = parse_url($infile);
     $i_handle = fsockopen($parts['host'], 80, $errstr, $errcode, 5);
-    $o_handle = fopen($outfile, 'wb');
-
-    if ($i_handle == false || $o_handle == false) {
-        return false;
-    }
 
     if (!empty($parts['query'])) {
         $parts['path'] .= '?' . $parts['query'];
@@ -87,6 +85,7 @@ function copyfile($infile, $outfile) {
     $request .= "Host: {$parts['host']}\r\n";
     $request .= "User-Agent: Mozilla/5.0\r\n";
     $request .= "Keep-Alive: 115\r\n";
+    $request .= "Content-Type: video/mp4\r\n";
     $request .= "Referer: http://trailers.to\r\n";
     $request .= "Connection: keep-alive\r\n\r\n";
 	
@@ -117,6 +116,11 @@ function copyfile($infile, $outfile) {
             break;
         }
     }
+    $o_handle = fopen($outfile." ".formatBytes(  ($length*10)) .'.mp4', 'wb');
+
+    if ($i_handle == false || $o_handle == false) {
+        return false;
+    }
 	
 //print_r("\n");
 //print_r($length);
@@ -146,7 +150,7 @@ print_r($headers);
 		echo ".";
 		if ($perf == $per)
 		{
-			echo " ".$per."% ".formatBytes(round($cnt*10))." ";
+			echo " ".$per."% ".formatBytes(round($cnt*10))." ".date("h:i:sa")." ";
 			//echo " ".$per."% ".(round($cnt*10))." ";
 			$perf=$perf+1;
 			//ob_get_clean();
@@ -185,6 +189,6 @@ $key = $key[0][0];
 	
 //copyfile('https://s0.blogspotting.art/web-sources/475DC76CEA238433/'.($idmaster).'/file', $file.'.mp4');
 //copyfile('https://s1.movies.futbol/web-sources/475DC76CEA238433/'.($idmaster).'/file', $file.'.mp4');
-copyfile('https://s0.blogspotting.art/web-sources/'.$key.'/'.($idmaster).'/file', $file.'.mp4');
+//copyfile('https://s0.blogspotting.art/web-sources/'.$key.'/'.($idmaster).'/file', $file);
 print_r(['https://s0.blogspotting.art/web-sources/'.$key.'/'.($idmaster).'/file'])
 ?>
